@@ -94,25 +94,25 @@ html_code = """
                     <label class="block text-xs font-medium text-stone-600 mb-2">ข้อจำกัดด้านอาหาร / รูปแบบการทาน (Dietary Preferences)</label>
                     <div class="flex flex-wrap gap-2">
                         <label class="cursor-pointer">
-                            <input type="checkbox" value="คาร์บต่ำ (Low Carb)" class="peer sr-only dietary-checkbox">
+                            <input type="checkbox" value="คาร์บต่ำ" class="peer sr-only dietary-checkbox">
                             <div class="px-4 py-2 bg-stone-50 border border-stone-200 rounded-full text-sm text-stone-600 peer-checked:bg-emerald-50 peer-checked:border-emerald-500 peer-checked:text-emerald-700 hover:bg-stone-100 transition">
                                 🥗 คาร์บต่ำ (Low Carb)
                             </div>
                         </label>
                         <label class="cursor-pointer">
-                            <input type="checkbox" value="โปรตีนสูง (High Protein)" class="peer sr-only dietary-checkbox">
+                            <input type="checkbox" value="โปรตีนสูง" class="peer sr-only dietary-checkbox">
                             <div class="px-4 py-2 bg-stone-50 border border-stone-200 rounded-full text-sm text-stone-600 peer-checked:bg-emerald-50 peer-checked:border-emerald-500 peer-checked:text-emerald-700 hover:bg-stone-100 transition">
                                 🥩 โปรตีนสูง (High Protein)
                             </div>
                         </label>
                         <label class="cursor-pointer">
-                            <input type="checkbox" value="มังสวิรัติ (Vegetarian)" class="peer sr-only dietary-checkbox">
+                            <input type="checkbox" value="มังสวิรัติ" class="peer sr-only dietary-checkbox">
                             <div class="px-4 py-2 bg-stone-50 border border-stone-200 rounded-full text-sm text-stone-600 peer-checked:bg-emerald-50 peer-checked:border-emerald-500 peer-checked:text-emerald-700 hover:bg-stone-100 transition">
                                 🌱 มังสวิรัติ (Vegetarian)
                             </div>
                         </label>
                         <label class="cursor-pointer">
-                            <input type="checkbox" value="คีโต (Ketogenic)" class="peer sr-only dietary-checkbox">
+                            <input type="checkbox" value="คีโต" class="peer sr-only dietary-checkbox">
                             <div class="px-4 py-2 bg-stone-50 border border-stone-200 rounded-full text-sm text-stone-600 peer-checked:bg-emerald-50 peer-checked:border-emerald-500 peer-checked:text-emerald-700 hover:bg-stone-100 transition">
                                 🥑 คีโต (Ketogenic)
                             </div>
@@ -155,69 +155,55 @@ html_code = """
         <!-- Dynamic Results Section -->
         <div id="loading" class="hidden text-center py-12">
             <div class="inline-block animate-spin rounded-full h-8 w-8 border-2 border-emerald-600 border-t-transparent"></div>
-            <p class="text-sm text-stone-500 mt-3">กำลังให้ AI ออกแบบแผนโภชนาการและออกกำลังกาย...</p>
+            <p class="text-sm text-stone-500 mt-3">กำลังประมวลผลแผนโภชนาการและการออกกำลังกาย...</p>
         </div>
 
-        <!-- การ์ดแสดงผลเรียงต่อกันหลายคอลัมน์ -->
+        <!-- การ์ดแสดงผล -->
         <div id="planContainer" class="grid grid-cols-1 xl:grid-cols-2 gap-6"></div>
     </div>
 
     <script>
-        // Calculate BMI & Gender Condition Logic
+        // Calculate BMI
         function calculateBMI(weight, heightCM, gender) {
             const heightM = heightCM / 100;
             const bmi = (weight / (heightM * heightM)).toFixed(1);
             let status = '';
             let colorClass = '';
 
-            if (gender === 'male') {
-                if (bmi < 18.5) {
-                    status = 'น้ำหนักน้อย / ผอม (Underweight)';
-                    colorClass = 'bg-blue-50 text-blue-800 border-blue-200';
-                } else if (bmi <= 22.9) {
-                    status = 'น้ำหนักปกติ / สมส่วน (Normal)';
-                    colorClass = 'bg-emerald-50 text-emerald-800 border-emerald-200';
-                } else {
-                    status = 'น้ำหนักเกิน / อ้วน (Overweight)';
-                    colorClass = 'bg-amber-50 text-amber-800 border-amber-200';
-                }
-            } else { // female
-                if (bmi < 18.5) {
-                    status = 'น้ำหนักน้อย / ผอม (Underweight)';
-                    colorClass = 'bg-blue-50 text-blue-800 border-blue-200';
-                } else if (bmi <= 21.9) {
-                    status = 'น้ำหนักปกติ / สมส่วน (Normal)';
-                    colorClass = 'bg-emerald-50 text-emerald-800 border-emerald-200';
-                } else {
-                    status = 'น้ำหนักเกิน / อ้วน (Overweight)';
-                    colorClass = 'bg-amber-50 text-amber-800 border-amber-200';
-                }
-            }
+            const thresholds = gender === 'male' ? { low: 18.5, high: 22.9 } : { low: 18.5, high: 21.9 };
 
+            if (bmi < thresholds.low) {
+                status = 'น้ำหนักน้อย / ผอม (Underweight)';
+                colorClass = 'bg-blue-50 text-blue-800 border-blue-200';
+            } else if (bmi <= thresholds.high) {
+                status = 'น้ำหนักปกติ / สมส่วน (Normal)';
+                colorClass = 'bg-emerald-50 text-emerald-800 border-emerald-200';
+            } else {
+                status = 'น้ำหนักเกิน / อ้วน (Overweight)';
+                colorClass = 'bg-amber-50 text-amber-800 border-amber-200';
+            }
             return { bmi, status, colorClass };
         }
 
         // Mock/Fetch AI API Response 
         async function fetchPlanFromAI(gender, weight, height, goal, days, bmi, status, dietaryText) {
-            // เพิ่มคำสั่งกำชับ AI ว่าถ้าเป็นมังสวิรัติ ห้ามมีเนื้อสัตว์
+            
+            // 1. Prompt สำหรับการเรียก AI จริง (ครอบคลุมความหลากหลายและข้อจำกัดทั้งหมด)
             const prompt = `ผู้ใช้เพศ: ${gender === 'male' ? 'ชาย' : 'หญิง'}, น้ำหนัก: ${weight} kg, ส่วนสูง: ${height} cm, ค่า BMI: ${bmi} (${status}), เป้าหมาย: ${goal}
-${dietaryText} (สำคัญมาก: หากมีข้อจำกัดด้านอาหาร เช่น มังสวิรัติ ต้องจัดเมนูให้ถูกต้อง ห้ามมีเนื้อสัตว์เด็ดขาด ใช้โปรตีนจากพืช เต้าหู้ เห็ด หรือเทมเป้แทน)
-กรุณาสร้างแผนโภชนาการและการออกกำลังกายแบบรายวัน จำนวนทั้งหมด ${days} วัน
+ข้อจำกัดด้านอาหาร: ${dietaryText} 
 
-ตอบกลับเป็น JSON รูปแบบนี้เท่านั้น (ห้ามใส่ markdown หรือโค้ดบล็อก):
+คำสั่งสำคัญ: 
+- จัดเมนูให้ถูกต้องตามข้อจำกัดอย่างเคร่งครัด (เช่น มังสวิรัติห้ามมีเนื้อสัตว์/น้ำปลา, คีโตห้ามมีข้าว/น้ำตาล/แป้ง, แพ้ถั่วห้ามมีถั่วทุกชนิด, ไม่ทานอาหารทะเลห้ามมีกุ้งหอยปูปลาน้ำปลา)
+- **ต้องมีความหลากหลายของเมนูอาหาร** เมนูในแต่ละวันห้ามซ้ำซากจำเจ สลับสับเปลี่ยนประเภทวัตถุดิบ
+- หากเป้าหมายคือ 'เพิ่มกล้ามเนื้อ' หรือ 'โปรตีนสูง' ให้เพิ่มปริมาณโปรตีนในมื้ออาหารให้ชัดเจน
+
+ตอบกลับเป็น JSON รูปแบบนี้เท่านั้น:
 [
   {
     "day": 1,
     "title": "วันที่ 1: ชื่อเน้นย้ำเป้าหมาย",
-    "meals": {
-      "breakfast": "เมนูเช้า",
-      "lunch": "เมนูกลางวัน",
-      "dinner": "เมนูเย็น"
-    },
-    "workout": {
-      "title": "ชื่อโปรแกรมออกกำลังกาย",
-      "detail": "รายละเอียดท่าออกกำลังกายและระยะเวลา"
-    }
+    "meals": { "breakfast": "...", "lunch": "...", "dinner": "..." },
+    "workout": { "title": "...", "detail": "..." }
   }
 ]`;
 
@@ -228,48 +214,116 @@ ${dietaryText} (สำคัญมาก: หากมีข้อจำกั�
                     return JSON.parse(cleanText);
                 }
             } catch (e) {
-                console.warn("AI API call failed or not available, generating fallback structure.", e);
+                console.warn("AI API ไม่พร้อมใช้งาน, ระบบจะใช้ Fallback แผนอาหารที่หลากหลายแทน", e);
             }
 
-            // Fallback generation for demo/standard loop
-            const result = [];
+            // 2. ระบบ Fallback แบบใหม่: ฐานข้อมูลเมนูแบบหลากหลาย พร้อมระบบ Filter
             
-            // เช็คว่าเป็นมังสวิรัติหรือไม่จาก dietaryText
             const isVeg = dietaryText.includes("มังสวิรัติ");
+            const isKeto = dietaryText.includes("คีโต") || dietaryText.includes("คาร์บต่ำ");
+            const isNoSeafood = dietaryText.includes("ไม่ทานอาหารทะเล");
+            const isNutFree = dietaryText.includes("แพ้ถั่ว");
+            const isHighProtein = dietaryText.includes("โปรตีนสูง") || goal === 'เพิ่มกล้ามเนื้อ';
 
+            // ฐานข้อมูล Mock Menu แบ่งตามหมวดหมู่และ Tag
+            const dbMeals = {
+                breakfast: [
+                    { name: 'ไข่ต้ม 3 ฟอง + ขนมปังโฮลวีต', veg: false, keto: false, seafood: false, nut: false },
+                    { name: 'สลัดอะโวคาโดไข่ต้มน้ำมันมะกอก', veg: true, keto: true, seafood: false, nut: false },
+                    { name: 'ข้าวต้มปลาแซลมอนโรยขิง', veg: false, keto: false, seafood: true, nut: false },
+                    { name: 'เต้าหู้ผัดเห็ดหอม + กาแฟดำ', veg: true, keto: true, seafood: false, nut: false },
+                    { name: 'อกไก่ต้ม + นมอัลมอนด์', veg: false, keto: true, seafood: false, nut: true },
+                    { name: 'แซนวิชทูน่าโฮลวีต', veg: false, keto: false, seafood: true, nut: false },
+                    { name: 'ข้าวโอ๊ตต้มธัญพืชรวม', veg: true, keto: false, seafood: false, nut: true },
+                    { name: 'กรีกโยเกิร์ต + ผลไม้ตระกูลเบอร์รี่', veg: true, keto: false, seafood: false, nut: false },
+                    { name: 'ไข่กระทะ (ไม่ใช้น้ำมัน) + ผักต้ม', veg: true, keto: true, seafood: false, nut: false },
+                    { name: 'สมูทตี้โปรตีน + กล้วยหอม', veg: true, keto: false, seafood: false, nut: false }
+                ],
+                lunch: [
+                    { name: 'ข้าวกล้อง + อกไก่ย่างพริกไทยดำ + ผักต้ม', veg: false, keto: false, seafood: false, nut: false },
+                    { name: 'สลัดปลาแซลมอนย่าง', veg: false, keto: true, seafood: true, nut: false },
+                    { name: 'เกาเหลาเต้าหู้เห็ดรวมน้ำใส', veg: true, keto: true, seafood: false, nut: false },
+                    { name: 'ข้าวกล้อง + เทมเป้ย่างซีอิ๊ว', veg: true, keto: false, seafood: false, nut: false },
+                    { name: 'ผัดกะเพราไก่สับ (ไม่ใส่น้ำตาล) + ไข่ดาว', veg: false, keto: true, seafood: false, nut: false },
+                    { name: 'สลัดกุ้งต้ม + อะโวคาโด', veg: false, keto: true, seafood: true, nut: false },
+                    { name: 'ควินัวผัดผักรวม + เต้าหู้', veg: true, keto: false, seafood: false, nut: false },
+                    { name: 'เส้นบุกผัดขี้เมาไก่', veg: false, keto: true, seafood: false, nut: false },
+                    { name: 'ยำวุ้นเส้นเห็ดรวม', veg: true, keto: false, seafood: false, nut: false },
+                    { name: 'สเต๊กไก่สไปซี่ + บรอกโคลี', veg: false, keto: true, seafood: false, nut: false }
+                ],
+                dinner: [
+                    { name: 'สเต๊กปลาแซลมอน + สลัดผัก', veg: false, keto: true, seafood: true, nut: false },
+                    { name: 'สลัดผักรวมเต้าหู้ย่าง', veg: true, keto: true, seafood: false, nut: false },
+                    { name: 'อกไก่ฉีก + ผักสลัด + น้ำสลัดงาใส', veg: false, keto: true, seafood: false, nut: false },
+                    { name: 'ต้มยำกุ้งน้ำใส (ไม่ใส่น้ำตาล)', veg: false, keto: true, seafood: true, nut: false },
+                    { name: 'ผัดผักบุ้งเต้าเจี้ยว + ข้าวกล้อง', veg: true, keto: false, seafood: false, nut: false },
+                    { name: 'ปลากะพงนึ่งมะนาว + ผักลวก', veg: false, keto: true, seafood: true, nut: false },
+                    { name: 'ซุปฟักทองใส + ขนมปังโฮลวีต', veg: true, keto: false, seafood: false, nut: false },
+                    { name: 'เห็ดย่างเกลือ + สลัดผักใบเขียว', veg: true, keto: true, seafood: false, nut: false },
+                    { name: 'สเต๊กเนื้อสันใน + แอสพารากัส', veg: false, keto: true, seafood: false, nut: false },
+                    { name: 'แกงจืดเต้าหู้หมูสับ', veg: false, keto: false, seafood: false, nut: false }
+                ]
+            };
+
+            // ฟังก์ชันกรองอาหารตามข้อจำกัด
+            const filterMenu = (menuList) => {
+                let filtered = menuList.filter(m => {
+                    if (isVeg && !m.veg) return false;
+                    if (isKeto && !m.keto) return false;
+                    if (isNoSeafood && m.seafood) return false;
+                    if (isNutFree && m.nut) return false;
+                    return true;
+                });
+                // หากกรองแล้วไม่เหลืออะไรเลย ให้แสดงเมนู Safe Zone ที่ทานได้ทุกกลุ่ม
+                if(filtered.length === 0) {
+                    filtered = [{ name: 'สลัดผักออร์แกนิกน้ำใส + เต้าหู้ต้ม (Safe Menu)' }];
+                }
+                return filtered;
+            };
+
+            const availBreakfast = filterMenu(dbMeals.breakfast);
+            const availLunch = filterMenu(dbMeals.lunch);
+            const availDinner = filterMenu(dbMeals.dinner);
+
+            const result = [];
             for (let i = 1; i <= days; i++) {
                 
-                let breakfastMenu, lunchMenu, dinnerMenu;
+                // ใช้ Modulo (การหารเอาเศษ) เพื่อหมุนเวียนเมนูไม่ให้ซ้ำติดกัน
+                let b = availBreakfast[(i-1) % availBreakfast.length].name;
+                let l = availLunch[(i-1) % availLunch.length].name;
+                let d = availDinner[(i-1) % availDinner.length].name;
 
-                // กำหนดเมนูตามเป้าหมายและรูปแบบการกิน (แยกกรณีมังสวิรัติ)
-                if (isVeg) {
-                    breakfastMenu = goal === 'เพิ่มกล้ามเนื้อ' ? 'เต้าหู้ผัดเห็ดหอม + ขนมปังโฮลวีต 2 แผ่น + นมถั่วเหลือง' : 'ข้าวโอ๊ตต้มธัญพืช + กาแฟดำไม่ใส่น้ำตาล';
-                    lunchMenu = goal === 'เพิ่มกล้ามเนื้อ' ? 'ข้าวกล้อง + เทมเป้ย่าง 200g + ผักต้ม' : 'เกาเหลาเต้าหู้เห็ดรวม + ข้าวกล้องครึ่งทัพพี';
-                    dinnerMenu = goal === 'เพิ่มกล้ามเนื้อ' ? 'สลัดถั่วลูกไก่และคินัว + มันหวาน' : 'สลัดผักรวมเต้าหู้ย่าง (น้ำสลัดใส)';
+                // เพิ่มโน้ตสำหรับเป้าหมายโปรตีนสูง
+                if (isHighProtein) {
+                    b += ' (เพิ่มไข่ต้ม/โปรตีนเสริม)';
+                    l += ' (เพิ่มปริมาณเนื้อสัตว์/เต้าหู้ 1.5 เท่า)';
+                    d += ' (เสริมโปรตีน 1 ส่วน)';
+                }
+
+                // กำหนดแผนออกกำลังกาย
+                let workoutTitle, workoutDetail;
+                if (goal === 'ลดน้ำหนัก') {
+                    workoutTitle = 'คาร์ดิโอเผาผลาญไขมัน';
+                    workoutDetail = 'เดินเร็ว/จ็อกกิ้ง 45 นาที + ยืดเหยียดร่างกาย 10 นาที';
+                } else if (goal === 'เพิ่มกล้ามเนื้อ') {
+                    workoutTitle = 'เวทเทรนนิ่ง เน้นสร้างกล้ามเนื้อ';
+                    workoutDetail = 'Squat, Push-up, Lunge อย่างละ 4 เซต เซตละ 12 ครั้ง พักระหว่างเซต 60 วินาที';
                 } else {
-                    breakfastMenu = goal === 'เพิ่มกล้ามเนื้อ' ? 'ไข่ต้ม 3 ฟอง + ขนมปังโฮลวีต 2 แผ่น + นมสด' : 'อกไก่ต้ม + กาแฟดำไม่ใส่น้ำตาล';
-                    lunchMenu = goal === 'เพิ่มกล้ามเนื้อ' ? 'ข้าวกล้อง + อกไก่ย่าง 200g + ผักต้ม' : 'เกาเหลาอกไก่พิเศษผัก + ข้าวกล้องครึ่งทัพพี';
-                    dinnerMenu = goal === 'เพิ่มกล้ามเนื้อ' ? 'สเต๊กปลาแซลมอน + มันหวาน + สลัดผัก' : 'สลัดอกไก่ + ไข่ต้ม 1 ฟอง (น้ำสลัดใส)';
+                    workoutTitle = 'ออกกำลังกายเพื่อสุขภาพองค์รวม';
+                    workoutDetail = 'โยคะ 30 นาที สลับกับการเดินเล่นรับอากาศบริสุทธิ์ 20 นาที';
                 }
 
                 result.push({
                     day: i,
-                    title: `วันที่ ${i}: แผนสุขภาพสร้างสมดุล`,
-                    meals: {
-                        breakfast: breakfastMenu,
-                        lunch: lunchMenu,
-                        dinner: dinnerMenu
-                    },
-                    workout: {
-                        title: goal === 'เพิ่มกล้ามเนื้อ' ? 'เวทเทรนนิ่ง เน้นกล้ามเนื้อใหญ่' : 'คาร์ดิโอ + เวทเทรนนิ่งเบาๆ',
-                        detail: goal === 'เพิ่มกล้ามเนื้อ' ? 'Squat, Push-up, Lunge อย่างละ 4 เซต เซตละ 12 ครั้ง' : 'เดินเร็ว/วิ่งเหยาะๆ 30 นาที + สแควท 3 เซต'
-                    }
+                    title: `วันที่ ${i}: ${goal} อย่างยั่งยืน`,
+                    meals: { breakfast: b, lunch: l, dinner: d },
+                    workout: { title: workoutTitle, detail: workoutDetail }
                 });
             }
             return result;
         }
 
-        // Render Cards (Loop)
+        // Render Cards
         function renderPlan(planData) {
             const container = document.getElementById('planContainer');
             container.innerHTML = '';
@@ -283,7 +337,6 @@ ${dietaryText} (สำคัญมาก: หากมีข้อจำกั�
                         <span class="text-xs bg-stone-100 text-stone-600 px-2.5 py-1 rounded-full font-medium">Day ${item.day}</span>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 h-[calc(100%-3rem)]">
-                        <!-- Meals -->
                         <div>
                             <h4 class="text-xs font-semibold uppercase tracking-wider text-emerald-700 mb-3 flex items-center gap-1.5">
                                 🍳 ตารางอาหาร
@@ -294,7 +347,6 @@ ${dietaryText} (สำคัญมาก: หากมีข้อจำกั�
                                 <li class="bg-stone-50 p-2.5 rounded-xl"><strong class="text-stone-800">มื้อเย็น:</strong> ${item.meals.dinner}</li>
                             </ul>
                         </div>
-                        <!-- Workout -->
                         <div>
                             <h4 class="text-xs font-semibold uppercase tracking-wider text-stone-700 mb-3 flex items-center gap-1.5">
                                 🏃‍♂️ การออกกำลังกาย
@@ -320,25 +372,22 @@ ${dietaryText} (สำคัญมาก: หากมีข้อจำกั�
             const goal = document.getElementById('goal').value;
             const days = parseInt(document.getElementById('days').value) || 7;
 
-            // ดึงข้อมูลข้อจำกัดด้านอาหารที่ผู้ใช้ติ๊กเลือก (เก็บเป็น Array แล้วเชื่อมด้วยลูกน้ำ)
             const dietaryCheckboxes = document.querySelectorAll('.dietary-checkbox:checked');
             const dietaryPreferences = Array.from(dietaryCheckboxes).map(cb => cb.value).join(', ');
-            const dietaryText = dietaryPreferences ? `ข้อจำกัดด้านอาหาร / รูปแบบการทาน: ${dietaryPreferences}` : 'ไม่มีข้อจำกัดด้านอาหาร';
+            const dietaryText = dietaryPreferences ? dietaryPreferences : 'ไม่มีข้อจำกัดด้านอาหาร';
 
-            // 1. Calculate & Display BMI
+            // 1. BMI
             const bmiInfo = calculateBMI(weight, height, gender);
             const bmiBanner = document.getElementById('bmiResult');
-
             document.getElementById('bmiValue').textContent = bmiInfo.bmi;
             document.getElementById('bmiStatusText').textContent = bmiInfo.status;
             bmiBanner.className = `mt-6 p-4 rounded-xl border transition-all ${bmiInfo.colorClass}`;
             bmiBanner.classList.remove('hidden');
 
-            // 2. Fetch AI & Render Plan
+            // 2. Fetch Plan
             document.getElementById('loading').classList.remove('hidden');
             document.getElementById('planContainer').innerHTML = '';
 
-            // ส่งข้อมูล dietaryText เข้าไปที่ฟังก์ชันเพื่อประมวลผล
             const plan = await fetchPlanFromAI(gender, weight, height, goal, days, bmiInfo.bmi, bmiInfo.status, dietaryText);
 
             document.getElementById('loading').classList.add('hidden');
@@ -349,5 +398,4 @@ ${dietaryText} (สำคัญมาก: หากมีข้อจำกั�
 </html>
 """
 
-# คำสั่งแสดงผล HTML บน Streamlit
 components.html(html_code, height=1200, scrolling=True)
