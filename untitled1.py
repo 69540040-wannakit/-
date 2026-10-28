@@ -7,7 +7,8 @@ Original file is located at
     https://colab.research.google.com/drive/1jzQ0E9Qkson8vftIJ3AOs5b8s-SM6b2L
 """
 
-from IPython.display import HTML
+import streamlit as st
+import streamlit.components.v1 as components
 
 # วางโค้ด HTML ทั้งหมดไว้ด้านล่างนี้
 html_code = """
@@ -286,3 +287,4 @@ html_code = """
 
 # คำสั่งแสดงผล HTML บน Google Colab
 HTML(html_code)
+components.html(html_code, height=900, scrolling=True)
