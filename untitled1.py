@@ -57,7 +57,7 @@ html_code = """
 
         <!-- Form Section -->
         <div class="bg-white rounded-2xl p-6 border border-stone-200/80 shadow-sm mb-8 max-w-6xl mx-auto">
-            <form id="healthForm" class="space-y-4">
+            <form id="healthForm" class="space-y-5">
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                     <div>
                         <label class="block text-xs font-medium text-stone-600 mb-1">เพศ</label>
@@ -89,7 +89,50 @@ html_code = """
                     </select>
                 </div>
 
-                <button type="submit" id="submitBtn" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-medium py-2.5 rounded-xl transition duration-200 shadow-sm flex items-center justify-center gap-2">
+                <!-- Dietary Preferences (ที่เพิ่มเข้ามาใหม่) -->
+                <div>
+                    <label class="block text-xs font-medium text-stone-600 mb-2">ข้อจำกัดด้านอาหาร / รูปแบบการทาน (Dietary Preferences)</label>
+                    <div class="flex flex-wrap gap-2">
+                        <label class="cursor-pointer">
+                            <input type="checkbox" value="คาร์บต่ำ (Low Carb)" class="peer sr-only dietary-checkbox">
+                            <div class="px-4 py-2 bg-stone-50 border border-stone-200 rounded-full text-sm text-stone-600 peer-checked:bg-emerald-50 peer-checked:border-emerald-500 peer-checked:text-emerald-700 hover:bg-stone-100 transition">
+                                🥗 คาร์บต่ำ (Low Carb)
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="checkbox" value="โปรตีนสูง (High Protein)" class="peer sr-only dietary-checkbox">
+                            <div class="px-4 py-2 bg-stone-50 border border-stone-200 rounded-full text-sm text-stone-600 peer-checked:bg-emerald-50 peer-checked:border-emerald-500 peer-checked:text-emerald-700 hover:bg-stone-100 transition">
+                                🥩 โปรตีนสูง (High Protein)
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="checkbox" value="มังสวิรัติ (Vegetarian)" class="peer sr-only dietary-checkbox">
+                            <div class="px-4 py-2 bg-stone-50 border border-stone-200 rounded-full text-sm text-stone-600 peer-checked:bg-emerald-50 peer-checked:border-emerald-500 peer-checked:text-emerald-700 hover:bg-stone-100 transition">
+                                🌱 มังสวิรัติ (Vegetarian)
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="checkbox" value="คีโต (Ketogenic)" class="peer sr-only dietary-checkbox">
+                            <div class="px-4 py-2 bg-stone-50 border border-stone-200 rounded-full text-sm text-stone-600 peer-checked:bg-emerald-50 peer-checked:border-emerald-500 peer-checked:text-emerald-700 hover:bg-stone-100 transition">
+                                🥑 คีโต (Ketogenic)
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="checkbox" value="แพ้ถั่ว" class="peer sr-only dietary-checkbox">
+                            <div class="px-4 py-2 bg-stone-50 border border-stone-200 rounded-full text-sm text-stone-600 peer-checked:bg-red-50 peer-checked:border-red-500 peer-checked:text-red-700 hover:bg-stone-100 transition">
+                                🚫 แพ้ถั่ว
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="checkbox" value="ไม่ทานอาหารทะเล" class="peer sr-only dietary-checkbox">
+                            <div class="px-4 py-2 bg-stone-50 border border-stone-200 rounded-full text-sm text-stone-600 peer-checked:bg-red-50 peer-checked:border-red-500 peer-checked:text-red-700 hover:bg-stone-100 transition">
+                                🚫 ไม่ทานอาหารทะเล
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" id="submitBtn" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-medium py-2.5 rounded-xl transition duration-200 shadow-sm flex items-center justify-center gap-2 mt-4">
                     <span>คำนวณ BMI และสร้างตารางด้วย AI</span>
                 </button>
             </form>
@@ -154,9 +197,10 @@ html_code = """
             return { bmi, status, colorClass };
         }
 
-        // Mock/Fetch AI API Response
-        async function fetchPlanFromAI(gender, weight, height, goal, days, bmi, status) {
+        // Mock/Fetch AI API Response (ส่งตัวแปร dietaryText เพิ่มเข้าไป)
+        async function fetchPlanFromAI(gender, weight, height, goal, days, bmi, status, dietaryText) {
             const prompt = `ผู้ใช้เพศ: ${gender === 'male' ? 'ชาย' : 'หญิง'}, น้ำหนัก: ${weight} kg, ส่วนสูง: ${height} cm, ค่า BMI: ${bmi} (${status}), เป้าหมาย: ${goal}
+${dietaryText}
 กรุณาสร้างแผนโภชนาการและการออกกำลังกายแบบรายวัน จำนวนทั้งหมด ${days} วัน
 
 ตอบกลับเป็น JSON รูปแบบนี้เท่านั้น (ห้ามใส่ markdown หรือโค้ดบล็อก):
@@ -257,6 +301,11 @@ html_code = """
             const goal = document.getElementById('goal').value;
             const days = parseInt(document.getElementById('days').value) || 7;
 
+            // ดึงข้อมูลข้อจำกัดด้านอาหารที่ผู้ใช้ติ๊กเลือก (เก็บเป็น Array แล้วเชื่อมด้วยลูกน้ำ)
+            const dietaryCheckboxes = document.querySelectorAll('.dietary-checkbox:checked');
+            const dietaryPreferences = Array.from(dietaryCheckboxes).map(cb => cb.value).join(', ');
+            const dietaryText = dietaryPreferences ? `ข้อจำกัดด้านอาหาร / รูปแบบการทาน: ${dietaryPreferences}` : 'ไม่มีข้อจำกัดด้านอาหาร';
+
             // 1. Calculate & Display BMI
             const bmiInfo = calculateBMI(weight, height, gender);
             const bmiBanner = document.getElementById('bmiResult');
@@ -270,7 +319,8 @@ html_code = """
             document.getElementById('loading').classList.remove('hidden');
             document.getElementById('planContainer').innerHTML = '';
 
-            const plan = await fetchPlanFromAI(gender, weight, height, goal, days, bmiInfo.bmi, bmiInfo.status);
+            // ส่งข้อมูล dietaryText เข้าไปที่ฟังก์ชันเพื่อประมวลผล
+            const plan = await fetchPlanFromAI(gender, weight, height, goal, days, bmiInfo.bmi, bmiInfo.status, dietaryText);
 
             document.getElementById('loading').classList.add('hidden');
             renderPlan(plan);
