@@ -27,29 +27,29 @@ html_code = """
             <h1 class="text-4xl font-medium text-stone-900 mt-2">Health & Meal Planner</h1>
         </header>
 
-        <!-- BMI Reference Table -->
+        <!-- BMI Reference Table (ปรับเพิ่มขนาดตัวหนังสือแล้ว) -->
         <div class="bg-white rounded-2xl p-6 border border-stone-200/80 shadow-sm mb-6 max-w-6xl mx-auto">
-            <h2 class="text-lg font-medium text-stone-700 mb-4 flex items-center gap-2">
-                <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <h2 class="text-xl font-semibold text-stone-800 mb-4 flex items-center gap-2">
+                <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 ตารางเกณฑ์ค่า BMI อ้างอิง (ชาย & หญิง)
             </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5 text-base">
                 <!-- Male -->
-                <div class="bg-stone-50 p-4 rounded-xl border border-stone-100">
-                    <span class="font-semibold text-stone-700 text-base block mb-2">👨🏼‍💼 เพศชาย</span>
-                    <ul class="space-y-1.5 text-stone-600">
-                        <li class="flex justify-between"><span>ผอม (Underweight):</span> <span class="font-medium text-blue-600">&lt; 18.5</span></li>
-                        <li class="flex justify-between"><span>น้ำหนักปกติ (Normal):</span> <span class="font-medium text-emerald-600">18.5 - 22.9</span></li>
-                        <li class="flex justify-between"><span>น้ำหนักเกิน/อ้วน (Overweight):</span> <span class="font-medium text-amber-600">≥ 23.0</span></li>
+                <div class="bg-stone-50 p-5 rounded-xl border border-stone-100">
+                    <span class="font-semibold text-stone-800 text-lg block mb-3">👨🏼‍💼 เพศชาย</span>
+                    <ul class="space-y-2 text-stone-700">
+                        <li class="flex justify-between"><span>ผอม (Underweight):</span> <span class="font-semibold text-blue-600">&lt; 18.5</span></li>
+                        <li class="flex justify-between"><span>น้ำหนักปกติ (Normal):</span> <span class="font-semibold text-emerald-600">18.5 - 22.9</span></li>
+                        <li class="flex justify-between"><span>น้ำหนักเกิน/อ้วน (Overweight):</span> <span class="font-semibold text-amber-600">≥ 23.0</span></li>
                     </ul>
                 </div>
                 <!-- Female -->
-                <div class="bg-stone-50 p-4 rounded-xl border border-stone-100">
-                    <span class="font-semibold text-stone-700 text-base block mb-2">👩🏼‍💼 เพศหญิง</span>
-                    <ul class="space-y-1.5 text-stone-600">
-                        <li class="flex justify-between"><span>ผอม (Underweight):</span> <span class="font-medium text-blue-600">&lt; 18.5</span></li>
-                        <li class="flex justify-between"><span>น้ำหนักปกติ (Normal):</span> <span class="font-medium text-emerald-600">18.5 - 21.9</span></li>
-                        <li class="flex justify-between"><span>น้ำหนักเกิน/อ้วน (Overweight):</span> <span class="font-medium text-amber-600">≥ 22.0</span></li>
+                <div class="bg-stone-50 p-5 rounded-xl border border-stone-100">
+                    <span class="font-semibold text-stone-800 text-lg block mb-3">👩🏼‍💼 เพศหญิง</span>
+                    <ul class="space-y-2 text-stone-700">
+                        <li class="flex justify-between"><span>ผอม (Underweight):</span> <span class="font-semibold text-blue-600">&lt; 18.5</span></li>
+                        <li class="flex justify-between"><span>น้ำหนักปกติ (Normal):</span> <span class="font-semibold text-emerald-600">18.5 - 21.9</span></li>
+                        <li class="flex justify-between"><span>น้ำหนักเกิน/อ้วน (Overweight):</span> <span class="font-semibold text-amber-600">≥ 22.0</span></li>
                     </ul>
                 </div>
             </div>
@@ -192,7 +192,6 @@ html_code = """
         // Mock/Fetch AI API Response 
         async function fetchPlanFromAI(age, gender, weight, height, goal, days, bmi, status, dietaryText) {
             
-            // 1. Prompt สำหรับการเรียก AI จริง (ครอบคลุมความหลากหลาย ข้อจำกัด และ **ช่วงอายุ**)
             const prompt = `ผู้ใช้อายุ: ${age} ปี, เพศ: ${gender === 'male' ? 'ชาย' : 'หญิง'}, น้ำหนัก: ${weight} kg, ส่วนสูง: ${height} cm, ค่า BMI: ${bmi} (${status}), เป้าหมาย: ${goal}
 ข้อจำกัดด้านอาหาร: ${dietaryText} 
 
@@ -222,7 +221,6 @@ html_code = """
                 console.warn("AI API ไม่พร้อมใช้งาน, ระบบจะใช้ Fallback แผนอาหารที่หลากหลายแทน", e);
             }
 
-            // 2. ระบบ Fallback แบบใหม่: ฐานข้อมูลเมนูแบบหลากหลาย พร้อมระบบ Filter
             const isVeg = dietaryText.includes("มังสวิรัติ");
             const isKeto = dietaryText.includes("คีโต") || dietaryText.includes("คาร์บต่ำ");
             const isNoSeafood = dietaryText.includes("ไม่ทานอาหารทะเล");
@@ -299,12 +297,10 @@ html_code = """
                     d += ' (เสริมโปรตีนเชค หรือ อกไก่)';
                 }
 
-                // --------- ส่วนจัดการออกกำลังกายตามช่วงอายุ ---------
                 let workoutTitle = '';
                 let workoutDetail = '';
 
                 if (age < 30) {
-                    // วัยรุ่น - วัยทำงานตอนต้น (พลังงานเยอะ ฟื้นตัวไว)
                     if (goal === 'ลดน้ำหนัก') {
                         workoutTitle = 'HIIT & คาร์ดิโอความเข้มข้นสูง';
                         workoutDetail = 'กระโดดเชือกสลับวิ่งสปรินต์ 30 นาที (HIIT) สลับพักสั้นๆ เบิร์นไขมันขั้นสุด';
@@ -316,7 +312,6 @@ html_code = """
                         workoutDetail = 'วิ่งระยะกลาง (5-10 km), ว่ายน้ำ, หรือเต้นแอโรบิก 45-60 นาที';
                     }
                 } else if (age >= 30 && age < 50) {
-                    // วัยทำงาน (เน้นความสม่ำเสมอ รักษามวลกล้ามเนื้อ)
                     if (goal === 'ลดน้ำหนัก') {
                         workoutTitle = 'คาร์ดิโอเผาผลาญไขมัน Zone 2';
                         workoutDetail = 'วิ่งจ็อกกิ้ง ปั่นจักรยาน หรือว่ายน้ำ ระดับความเหนื่อยปานกลางต่อเนื่อง 45 นาที';
@@ -328,7 +323,6 @@ html_code = """
                         workoutDetail = 'บอดี้เวทเบาๆ 15 นาที สลับกับการเดินเร็ว 30 นาที';
                     }
                 } else if (age >= 50 && age <= 60) {
-                    // วัยกลางคนตอนปลาย (เน้นข้อต่อ การยืดหยุ่น และความแข็งแรงแกนกลาง)
                     if (goal === 'ลดน้ำหนัก') {
                         workoutTitle = 'คาร์ดิโอแบบแรงกระแทกต่ำ (Low Impact)';
                         workoutDetail = 'เดินเร็ว ปั่นจักรยานแม่เหล็ก หรือว่ายน้ำ 30-40 นาที (ลดแรงกระแทกข้อเข่า)';
@@ -340,7 +334,6 @@ html_code = """
                         workoutDetail = 'พิลาทิสเบาๆ หรือ ไทเก๊ก 30 นาที เน้นการทรงตัวและความยืดหยุ่น';
                     }
                 } else {
-                    // 60+ (ผู้สูงอายุ)
                     workoutTitle = 'ออกกำลังกายแบบเบา (Low Impact)';
                     workoutDetail = 'เดินแกว่งแขน 30 นาที หรือ โยคะยืดเหยียดเบาๆ ป้องกันข้อต่อบาดเจ็บ';
                 }
