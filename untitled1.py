@@ -25,7 +25,6 @@ html_code = """
         <!-- Header -->
         <header class="text-center mb-8">
             <h1 class="text-3xl font-light text-stone-900 mt-2">Health & Meal Planner</h1>
-            <p class="text-sm text-stone-500 mt-1">วางแผนโภชนาการและการออกกำลังกายส่วนบุคคลด้วย AI</p>
         </header>
 
         <!-- BMI Reference Table -->
@@ -90,7 +89,7 @@ html_code = """
                     </select>
                 </div>
 
-                <!-- Dietary Preferences -->
+                <!-- Dietary Preferences (ที่เพิ่มเข้ามาใหม่) -->
                 <div>
                     <label class="block text-xs font-medium text-stone-600 mb-2">ข้อจำกัดด้านอาหาร / รูปแบบการทาน (Dietary Preferences)</label>
                     <div class="flex flex-wrap gap-2">
@@ -133,8 +132,8 @@ html_code = """
                     </div>
                 </div>
 
-                <button type="submit" id="submitBtn" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-medium py-2.5 rounded-xl transition duration-200 shadow-sm flex items-center justify-center gap-2 mt-4 cursor-pointer">
-                    <span id="btnText">คำนวณ BMI และสร้างตารางด้วย AI</span>
+                <button type="submit" id="submitBtn" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-medium py-2.5 rounded-xl transition duration-200 shadow-sm flex items-center justify-center gap-2 mt-4">
+                    <span>คำนวณ BMI และสร้างตารางด้วย AI</span>
                 </button>
             </form>
 
@@ -198,7 +197,7 @@ html_code = """
             return { bmi, status, colorClass };
         }
 
-        // Mock/Fetch AI API Response
+        // Mock/Fetch AI API Response (ส่งตัวแปร dietaryText เพิ่มเข้าไป)
         async function fetchPlanFromAI(gender, weight, height, goal, days, bmi, status, dietaryText) {
             const prompt = `ผู้ใช้เพศ: ${gender === 'male' ? 'ชาย' : 'หญิง'}, น้ำหนัก: ${weight} kg, ส่วนสูง: ${height} cm, ค่า BMI: ${bmi} (${status}), เป้าหมาย: ${goal}
 ${dietaryText}
@@ -236,7 +235,7 @@ ${dietaryText}
             for (let i = 1; i <= days; i++) {
                 result.push({
                     day: i,
-                    title: `วันที่ ${i}: แผนสุขภาพสร้างสมดุล (${goal})`,
+                    title: `วันที่ ${i}: แผนสุขภาพสร้างสมดุล`,
                     meals: {
                         breakfast: goal === 'เพิ่มกล้ามเนื้อ' ? 'ไข่ต้ม 3 ฟอง + ขนมปังโฮลวีต 2 แผ่น + นมสด' : 'อกไก่ต้ม + กาแฟดำไม่ใส่น้ำตาล',
                         lunch: goal === 'เพิ่มกล้ามเนื้อ' ? 'ข้าวกล้อง + อกไก่ย่าง 200g + ผักต้ม' : 'เกาเหลาอกไก่พิเศษผัก + ข้าวกล้องครึ่งทัพพี',
@@ -254,38 +253,36 @@ ${dietaryText}
         // Render Cards (Loop)
         function renderPlan(planData) {
             const container = document.getElementById('planContainer');
-            container.innerHTML = ''; // ล้างตารางเก่าก่อนวาดใหม่เสมอ
+            container.innerHTML = '';
 
             planData.forEach(item => {
                 const card = document.createElement('div');
-                card.className = 'bg-white rounded-2xl p-6 border border-stone-200/80 shadow-sm hover:shadow-md transition flex flex-col justify-between';
+                card.className = 'bg-white rounded-2xl p-6 border border-stone-200/80 shadow-sm hover:shadow-md transition h-full';
                 card.innerHTML = `
-                    <div>
-                        <div class="flex items-center justify-between mb-4 pb-3 border-b border-stone-100">
-                            <h3 class="font-medium text-stone-900">${item.title}</h3>
-                            <span class="text-xs bg-stone-100 text-stone-600 px-2.5 py-1 rounded-full font-medium">Day ${item.day}</span>
+                    <div class="flex items-center justify-between mb-4 pb-3 border-b border-stone-100">
+                        <h3 class="font-medium text-stone-900">${item.title}</h3>
+                        <span class="text-xs bg-stone-100 text-stone-600 px-2.5 py-1 rounded-full font-medium">Day ${item.day}</span>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 h-[calc(100%-3rem)]">
+                        <!-- Meals -->
+                        <div>
+                            <h4 class="text-xs font-semibold uppercase tracking-wider text-emerald-700 mb-3 flex items-center gap-1.5">
+                                🍳 ตารางอาหาร
+                            </h4>
+                            <ul class="space-y-2 text-sm text-stone-600">
+                                <li class="bg-stone-50 p-2.5 rounded-xl"><strong class="text-stone-800">มื้อเช้า:</strong> ${item.meals.breakfast}</li>
+                                <li class="bg-stone-50 p-2.5 rounded-xl"><strong class="text-stone-800">มื้อกลางวัน:</strong> ${item.meals.lunch}</li>
+                                <li class="bg-stone-50 p-2.5 rounded-xl"><strong class="text-stone-800">มื้อเย็น:</strong> ${item.meals.dinner}</li>
+                            </ul>
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <!-- Meals -->
-                            <div>
-                                <h4 class="text-xs font-semibold uppercase tracking-wider text-emerald-700 mb-3 flex items-center gap-1.5">
-                                    🍳 ตารางอาหาร
-                                </h4>
-                                <ul class="space-y-2 text-sm text-stone-600">
-                                    <li class="bg-stone-50 p-2.5 rounded-xl"><strong class="text-stone-800">มื้อเช้า:</strong> ${item.meals.breakfast}</li>
-                                    <li class="bg-stone-50 p-2.5 rounded-xl"><strong class="text-stone-800">มื้อกลางวัน:</strong> ${item.meals.lunch}</li>
-                                    <li class="bg-stone-50 p-2.5 rounded-xl"><strong class="text-stone-800">มื้อเย็น:</strong> ${item.meals.dinner}</li>
-                                </ul>
-                            </div>
-                            <!-- Workout -->
-                            <div>
-                                <h4 class="text-xs font-semibold uppercase tracking-wider text-stone-700 mb-3 flex items-center gap-1.5">
-                                    🏃‍♂️ การออกกำลังกาย
-                                </h4>
-                                <div class="bg-stone-50 p-3.5 rounded-xl text-sm h-full flex flex-col justify-center">
-                                    <strong class="text-stone-800 block mb-1">${item.workout.title}</strong>
-                                    <p class="text-stone-600 text-xs leading-relaxed">${item.workout.detail}</p>
-                                </div>
+                        <!-- Workout -->
+                        <div>
+                            <h4 class="text-xs font-semibold uppercase tracking-wider text-stone-700 mb-3 flex items-center gap-1.5">
+                                🏃‍♂️ การออกกำลังกาย
+                            </h4>
+                            <div class="bg-stone-50 p-3.5 rounded-xl text-sm h-[calc(100%-2rem)] flex flex-col justify-center">
+                                <strong class="text-stone-800 block mb-1">${item.workout.title}</strong>
+                                <p class="text-stone-600 text-xs leading-relaxed">${item.workout.detail}</p>
                             </div>
                         </div>
                     </div>
@@ -294,57 +291,39 @@ ${dietaryText}
             });
         }
 
-        // Event Listener (รองรับการกดคำนวณซ้ำหลายๆ ครั้งได้)
+        // Event Listener
         document.getElementById('healthForm').addEventListener('submit', async (e) => {
             e.preventDefault();
 
-            const submitBtn = document.getElementById('submitBtn');
-            const btnText = document.getElementById('btnText');
-            
-            // ป้องกันการกดซ้ำระหว่างคำนวณ
-            submitBtn.disabled = true;
-            submitBtn.classList.add('opacity-75', 'cursor-not-allowed');
-            btnText.textContent = 'กำลังประมวลผล...';
+            const gender = document.getElementById('gender').value;
+            const weight = parseFloat(document.getElementById('weight').value);
+            const height = parseFloat(document.getElementById('height').value);
+            const goal = document.getElementById('goal').value;
+            const days = parseInt(document.getElementById('days').value) || 7;
 
-            try {
-                const gender = document.getElementById('gender').value;
-                const weight = parseFloat(document.getElementById('weight').value);
-                const height = parseFloat(document.getElementById('height').value);
-                const goal = document.getElementById('goal').value;
-                const days = parseInt(document.getElementById('days').value) || 7;
+            // ดึงข้อมูลข้อจำกัดด้านอาหารที่ผู้ใช้ติ๊กเลือก (เก็บเป็น Array แล้วเชื่อมด้วยลูกน้ำ)
+            const dietaryCheckboxes = document.querySelectorAll('.dietary-checkbox:checked');
+            const dietaryPreferences = Array.from(dietaryCheckboxes).map(cb => cb.value).join(', ');
+            const dietaryText = dietaryPreferences ? `ข้อจำกัดด้านอาหาร / รูปแบบการทาน: ${dietaryPreferences}` : 'ไม่มีข้อจำกัดด้านอาหาร';
 
-                // ดึงข้อมูลข้อจำกัดด้านอาหาร
-                const dietaryCheckboxes = document.querySelectorAll('.dietary-checkbox:checked');
-                const dietaryPreferences = Array.from(dietaryCheckboxes).map(cb => cb.value).join(', ');
-                const dietaryText = dietaryPreferences ? `ข้อจำกัดด้านอาหาร / รูปแบบการทาน: ${dietaryPreferences}` : 'ไม่มีข้อจำกัดด้านอาหาร';
+            // 1. Calculate & Display BMI
+            const bmiInfo = calculateBMI(weight, height, gender);
+            const bmiBanner = document.getElementById('bmiResult');
 
-                // 1. Calculate & Display BMI
-                const bmiInfo = calculateBMI(weight, height, gender);
-                const bmiBanner = document.getElementById('bmiResult');
+            document.getElementById('bmiValue').textContent = bmiInfo.bmi;
+            document.getElementById('bmiStatusText').textContent = bmiInfo.status;
+            bmiBanner.className = `mt-6 p-4 rounded-xl border transition-all ${bmiInfo.colorClass}`;
+            bmiBanner.classList.remove('hidden');
 
-                document.getElementById('bmiValue').textContent = bmiInfo.bmi;
-                document.getElementById('bmiStatusText').textContent = bmiInfo.status;
-                bmiBanner.className = `mt-6 p-4 rounded-xl border transition-all ${bmiInfo.colorClass}`;
-                bmiBanner.classList.remove('hidden');
+            // 2. Fetch AI & Render Plan
+            document.getElementById('loading').classList.remove('hidden');
+            document.getElementById('planContainer').innerHTML = '';
 
-                // 2. Fetch AI & Render Plan
-                document.getElementById('loading').classList.remove('hidden');
-                document.getElementById('planContainer').innerHTML = ''; // ล้างของเก่าออก
+            // ส่งข้อมูล dietaryText เข้าไปที่ฟังก์ชันเพื่อประมวลผล
+            const plan = await fetchPlanFromAI(gender, weight, height, goal, days, bmiInfo.bmi, bmiInfo.status, dietaryText);
 
-                const plan = await fetchPlanFromAI(gender, weight, height, goal, days, bmiInfo.bmi, bmiInfo.status, dietaryText);
-
-                document.getElementById('loading').classList.add('hidden');
-                renderPlan(plan);
-
-            } catch (error) {
-                console.error("เกิดข้อผิดพลาดในการคำนวณ:", error);
-                alert("เกิดข้อผิดพลาดในการสร้างแผน กรุณาลองใหม่อีกครั้ง");
-            } finally {
-                // คืนค่าปุ่มให้กดคำนวณใหม่ซ้ำได้เสมอ
-                submitBtn.disabled = false;
-                submitBtn.classList.remove('opacity-75', 'cursor-not-allowed');
-                btnText.textContent = 'คำนวณ BMI และสร้างตารางด้วย AI';
-            }
+            document.getElementById('loading').classList.add('hidden');
+            renderPlan(plan);
         });
     </script>
 </body>
