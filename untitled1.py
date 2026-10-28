@@ -286,5 +286,4 @@ html_code = """
 """
 
 # คำสั่งแสดงผล HTML บน Google Colab
-HTML(html_code)
 components.html(html_code, height=900, scrolling=True)
