@@ -24,29 +24,29 @@ html_code = """
     <div class="w-full px-4 md:px-12 py-8">
         <!-- Header -->
         <header class="text-center mb-8">
-            <h1 class="text-3xl font-light text-stone-900 mt-2">Health & Meal Planner</h1>
+            <h1 class="text-4xl font-medium text-stone-900 mt-2">Health & Meal Planner</h1>
         </header>
 
         <!-- BMI Reference Table -->
-        <div class="bg-white rounded-2xl p-5 border border-stone-200/80 shadow-sm mb-6 max-w-6xl mx-auto">
-            <h2 class="text-sm font-medium text-stone-700 mb-3 flex items-center gap-2">
-                <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        <div class="bg-white rounded-2xl p-6 border border-stone-200/80 shadow-sm mb-6 max-w-6xl mx-auto">
+            <h2 class="text-lg font-medium text-stone-700 mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 ตารางเกณฑ์ค่า BMI อ้างอิง (ชาย & หญิง)
             </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                 <!-- Male -->
-                <div class="bg-stone-50 p-3 rounded-xl border border-stone-100">
-                    <span class="font-semibold text-stone-700 block mb-2">👨🏼‍💼 เพศชาย</span>
-                    <ul class="space-y-1 text-stone-600">
+                <div class="bg-stone-50 p-4 rounded-xl border border-stone-100">
+                    <span class="font-semibold text-stone-700 text-base block mb-2">👨🏼‍💼 เพศชาย</span>
+                    <ul class="space-y-1.5 text-stone-600">
                         <li class="flex justify-between"><span>ผอม (Underweight):</span> <span class="font-medium text-blue-600">&lt; 18.5</span></li>
                         <li class="flex justify-between"><span>น้ำหนักปกติ (Normal):</span> <span class="font-medium text-emerald-600">18.5 - 22.9</span></li>
                         <li class="flex justify-between"><span>น้ำหนักเกิน/อ้วน (Overweight):</span> <span class="font-medium text-amber-600">≥ 23.0</span></li>
                     </ul>
                 </div>
                 <!-- Female -->
-                <div class="bg-stone-50 p-3 rounded-xl border border-stone-100">
-                    <span class="font-semibold text-stone-700 block mb-2">👩🏼‍💼 เพศหญิง</span>
-                    <ul class="space-y-1 text-stone-600">
+                <div class="bg-stone-50 p-4 rounded-xl border border-stone-100">
+                    <span class="font-semibold text-stone-700 text-base block mb-2">👩🏼‍💼 เพศหญิง</span>
+                    <ul class="space-y-1.5 text-stone-600">
                         <li class="flex justify-between"><span>ผอม (Underweight):</span> <span class="font-medium text-blue-600">&lt; 18.5</span></li>
                         <li class="flex justify-between"><span>น้ำหนักปกติ (Normal):</span> <span class="font-medium text-emerald-600">18.5 - 21.9</span></li>
                         <li class="flex justify-between"><span>น้ำหนักเกิน/อ้วน (Overweight):</span> <span class="font-medium text-amber-600">≥ 22.0</span></li>
@@ -60,33 +60,33 @@ html_code = """
             <form id="healthForm" class="space-y-5">
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
                     <div>
-                        <label class="block text-xs font-medium text-stone-600 mb-1">เพศ</label>
-                        <select id="gender" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition">
+                        <label class="block text-sm font-medium text-stone-600 mb-1">เพศ</label>
+                        <select id="gender" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-base focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition">
                             <option value="male">ชาย</option>
                             <option value="female">หญิง</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-stone-600 mb-1">อายุ (ปี)</label>
-                        <input type="number" id="age" placeholder="เช่น 25" required min="1" max="120" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition">
+                        <label class="block text-sm font-medium text-stone-600 mb-1">อายุ (ปี)</label>
+                        <input type="number" id="age" placeholder="เช่น 25" required min="1" max="120" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-base focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition">
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-stone-600 mb-1">น้ำหนัก (กิโลกรัม)</label>
-                        <input type="number" id="weight" placeholder="เช่น 65" required min="20" max="300" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition">
+                        <label class="block text-sm font-medium text-stone-600 mb-1">น้ำหนัก (กก.)</label>
+                        <input type="number" id="weight" placeholder="เช่น 65" required min="20" max="300" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-base focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition">
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-stone-600 mb-1">ส่วนสูง (เซนติเมตร)</label>
-                        <input type="number" id="height" placeholder="เช่น 170" required min="100" max="250" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition">
+                        <label class="block text-sm font-medium text-stone-600 mb-1">ส่วนสูง (ซม.)</label>
+                        <input type="number" id="height" placeholder="เช่น 170" required min="100" max="250" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-base focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition">
                     </div>
                     <div>
-                        <label class="block text-xs font-medium text-stone-600 mb-1">จำนวนวัน (1 - 30 วัน)</label>
-                        <input type="number" id="days" value="7" required min="1" max="30" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition">
+                        <label class="block text-sm font-medium text-stone-600 mb-1">จำนวนวัน (1-30)</label>
+                        <input type="number" id="days" value="7" required min="1" max="30" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-base focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition">
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-medium text-stone-600 mb-1">เป้าหมายสุขภาพ</label>
-                    <select id="goal" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition">
+                    <label class="block text-sm font-medium text-stone-600 mb-1">เป้าหมายสุขภาพ</label>
+                    <select id="goal" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-base focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition">
                         <option value="ลดน้ำหนัก">ลดน้ำหนัก / กระชับสัดส่วน (Weight Loss)</option>
                         <option value="เพิ่มกล้ามเนื้อ">เพิ่มกล้ามเนื้อ / เพิ่มน้ำหนัก (Muscle Gain)</option>
                         <option value="รักษาน้ำหนักและสุขภาพ">รักษาสุขภาพ / รักษาน้ำหนัก (Maintenance)</option>
@@ -95,62 +95,62 @@ html_code = """
 
                 <!-- Dietary Preferences -->
                 <div>
-                    <label class="block text-xs font-medium text-stone-600 mb-2">ข้อจำกัดด้านอาหาร / รูปแบบการทาน (Dietary Preferences)</label>
-                    <div class="flex flex-wrap gap-2">
+                    <label class="block text-sm font-medium text-stone-600 mb-3">ข้อจำกัดด้านอาหาร / รูปแบบการทาน (Dietary Preferences)</label>
+                    <div class="flex flex-wrap gap-3">
                         <label class="cursor-pointer">
                             <input type="checkbox" value="คาร์บต่ำ" class="peer sr-only dietary-checkbox">
-                            <div class="px-4 py-2 bg-stone-50 border border-stone-200 rounded-full text-sm text-stone-600 peer-checked:bg-emerald-50 peer-checked:border-emerald-500 peer-checked:text-emerald-700 hover:bg-stone-100 transition">
+                            <div class="px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-full text-base text-stone-600 peer-checked:bg-emerald-50 peer-checked:border-emerald-500 peer-checked:text-emerald-700 hover:bg-stone-100 transition">
                                 🥗 คาร์บต่ำ (Low Carb)
                             </div>
                         </label>
                         <label class="cursor-pointer">
                             <input type="checkbox" value="โปรตีนสูง" class="peer sr-only dietary-checkbox">
-                            <div class="px-4 py-2 bg-stone-50 border border-stone-200 rounded-full text-sm text-stone-600 peer-checked:bg-emerald-50 peer-checked:border-emerald-500 peer-checked:text-emerald-700 hover:bg-stone-100 transition">
+                            <div class="px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-full text-base text-stone-600 peer-checked:bg-emerald-50 peer-checked:border-emerald-500 peer-checked:text-emerald-700 hover:bg-stone-100 transition">
                                 🥩 โปรตีนสูง (High Protein)
                             </div>
                         </label>
                         <label class="cursor-pointer">
                             <input type="checkbox" value="มังสวิรัติ" class="peer sr-only dietary-checkbox">
-                            <div class="px-4 py-2 bg-stone-50 border border-stone-200 rounded-full text-sm text-stone-600 peer-checked:bg-emerald-50 peer-checked:border-emerald-500 peer-checked:text-emerald-700 hover:bg-stone-100 transition">
+                            <div class="px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-full text-base text-stone-600 peer-checked:bg-emerald-50 peer-checked:border-emerald-500 peer-checked:text-emerald-700 hover:bg-stone-100 transition">
                                 🌱 มังสวิรัติ (Vegetarian)
                             </div>
                         </label>
                         <label class="cursor-pointer">
                             <input type="checkbox" value="คีโต" class="peer sr-only dietary-checkbox">
-                            <div class="px-4 py-2 bg-stone-50 border border-stone-200 rounded-full text-sm text-stone-600 peer-checked:bg-emerald-50 peer-checked:border-emerald-500 peer-checked:text-emerald-700 hover:bg-stone-100 transition">
+                            <div class="px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-full text-base text-stone-600 peer-checked:bg-emerald-50 peer-checked:border-emerald-500 peer-checked:text-emerald-700 hover:bg-stone-100 transition">
                                 🥑 คีโต (Ketogenic)
                             </div>
                         </label>
                         <label class="cursor-pointer">
                             <input type="checkbox" value="แพ้ถั่ว" class="peer sr-only dietary-checkbox">
-                            <div class="px-4 py-2 bg-stone-50 border border-stone-200 rounded-full text-sm text-stone-600 peer-checked:bg-red-50 peer-checked:border-red-500 peer-checked:text-red-700 hover:bg-stone-100 transition">
+                            <div class="px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-full text-base text-stone-600 peer-checked:bg-red-50 peer-checked:border-red-500 peer-checked:text-red-700 hover:bg-stone-100 transition">
                                 🚫 แพ้ถั่ว
                             </div>
                         </label>
                         <label class="cursor-pointer">
                             <input type="checkbox" value="ไม่ทานอาหารทะเล" class="peer sr-only dietary-checkbox">
-                            <div class="px-4 py-2 bg-stone-50 border border-stone-200 rounded-full text-sm text-stone-600 peer-checked:bg-red-50 peer-checked:border-red-500 peer-checked:text-red-700 hover:bg-stone-100 transition">
+                            <div class="px-4 py-2.5 bg-stone-50 border border-stone-200 rounded-full text-base text-stone-600 peer-checked:bg-red-50 peer-checked:border-red-500 peer-checked:text-red-700 hover:bg-stone-100 transition">
                                 🚫 ไม่ทานอาหารทะเล
                             </div>
                         </label>
                     </div>
                 </div>
 
-                <button type="submit" id="submitBtn" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-medium py-2.5 rounded-xl transition duration-200 shadow-sm flex items-center justify-center gap-2 mt-4">
+                <button type="submit" id="submitBtn" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-medium py-3 text-lg rounded-xl transition duration-200 shadow-sm flex items-center justify-center gap-2 mt-4">
                     <span>คำนวณ BMI และสร้างตารางด้วย AI</span>
                 </button>
             </form>
 
             <!-- BMI Result Banner -->
-            <div id="bmiResult" class="hidden mt-6 p-4 rounded-xl border transition-all">
-                <div class="flex items-center justify-between flex-wrap gap-2">
+            <div id="bmiResult" class="hidden mt-6 p-5 rounded-xl border transition-all">
+                <div class="flex items-center justify-between flex-wrap gap-4">
                     <div>
-                        <span class="text-xs uppercase tracking-wider font-semibold opacity-75">สถานะสุขภาพของคุณ</span>
-                        <h3 id="bmiStatusText" class="text-lg font-medium">--</h3>
+                        <span class="text-sm uppercase tracking-wider font-semibold opacity-75">สถานะสุขภาพของคุณ</span>
+                        <h3 id="bmiStatusText" class="text-2xl font-medium mt-1">--</h3>
                     </div>
                     <div class="text-right">
-                        <span class="text-xs opacity-75 block">ค่า BMI</span>
-                        <span id="bmiValue" class="text-2xl font-semibold">--</span>
+                        <span class="text-sm opacity-75 block">ค่า BMI</span>
+                        <span id="bmiValue" class="text-4xl font-semibold">--</span>
                     </div>
                 </div>
             </div>
@@ -158,8 +158,8 @@ html_code = """
 
         <!-- Dynamic Results Section -->
         <div id="loading" class="hidden text-center py-12">
-            <div class="inline-block animate-spin rounded-full h-8 w-8 border-2 border-emerald-600 border-t-transparent"></div>
-            <p class="text-sm text-stone-500 mt-3">กำลังประมวลผลแผนโภชนาการและการออกกำลังกาย...</p>
+            <div class="inline-block animate-spin rounded-full h-10 w-10 border-4 border-emerald-600 border-t-transparent"></div>
+            <p class="text-base text-stone-500 mt-4">กำลังประมวลผลแผนโภชนาการและการออกกำลังกาย...</p>
         </div>
 
         <!-- การ์ดแสดงผล -->
@@ -364,28 +364,28 @@ html_code = """
                 const card = document.createElement('div');
                 card.className = 'bg-white rounded-2xl p-6 border border-stone-200/80 shadow-sm hover:shadow-md transition h-full';
                 card.innerHTML = `
-                    <div class="flex items-center justify-between mb-4 pb-3 border-b border-stone-100">
-                        <h3 class="font-medium text-stone-900">${item.title}</h3>
-                        <span class="text-xs bg-stone-100 text-stone-600 px-2.5 py-1 rounded-full font-medium">Day ${item.day}</span>
+                    <div class="flex items-center justify-between mb-5 pb-3 border-b border-stone-100">
+                        <h3 class="text-xl font-medium text-stone-900">${item.title}</h3>
+                        <span class="text-sm bg-stone-100 text-stone-600 px-3 py-1.5 rounded-full font-medium">Day ${item.day}</span>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 h-[calc(100%-3rem)]">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 h-[calc(100%-4rem)]">
                         <div>
-                            <h4 class="text-xs font-semibold uppercase tracking-wider text-emerald-700 mb-3 flex items-center gap-1.5">
+                            <h4 class="text-sm font-semibold uppercase tracking-wider text-emerald-700 mb-3 flex items-center gap-1.5">
                                 🍳 ตารางอาหาร
                             </h4>
-                            <ul class="space-y-2 text-sm text-stone-600">
-                                <li class="bg-stone-50 p-2.5 rounded-xl"><strong class="text-stone-800">มื้อเช้า:</strong> ${item.meals.breakfast}</li>
-                                <li class="bg-stone-50 p-2.5 rounded-xl"><strong class="text-stone-800">มื้อกลางวัน:</strong> ${item.meals.lunch}</li>
-                                <li class="bg-stone-50 p-2.5 rounded-xl"><strong class="text-stone-800">มื้อเย็น:</strong> ${item.meals.dinner}</li>
+                            <ul class="space-y-3 text-base text-stone-600">
+                                <li class="bg-stone-50 p-3 rounded-xl"><strong class="text-stone-800">มื้อเช้า:</strong> ${item.meals.breakfast}</li>
+                                <li class="bg-stone-50 p-3 rounded-xl"><strong class="text-stone-800">มื้อกลางวัน:</strong> ${item.meals.lunch}</li>
+                                <li class="bg-stone-50 p-3 rounded-xl"><strong class="text-stone-800">มื้อเย็น:</strong> ${item.meals.dinner}</li>
                             </ul>
                         </div>
                         <div>
-                            <h4 class="text-xs font-semibold uppercase tracking-wider text-stone-700 mb-3 flex items-center gap-1.5">
+                            <h4 class="text-sm font-semibold uppercase tracking-wider text-stone-700 mb-3 flex items-center gap-1.5">
                                 🏃‍♂️ การออกกำลังกาย
                             </h4>
-                            <div class="bg-stone-50 p-3.5 rounded-xl text-sm h-[calc(100%-2rem)] flex flex-col justify-center">
-                                <strong class="text-stone-800 block mb-1">${item.workout.title}</strong>
-                                <p class="text-stone-600 text-xs leading-relaxed">${item.workout.detail}</p>
+                            <div class="bg-stone-50 p-4 rounded-xl text-base h-[calc(100%-2rem)] flex flex-col justify-center">
+                                <strong class="text-stone-800 block mb-2">${item.workout.title}</strong>
+                                <p class="text-stone-600 text-sm leading-relaxed">${item.workout.detail}</p>
                             </div>
                         </div>
                     </div>
@@ -414,7 +414,7 @@ html_code = """
             const bmiBanner = document.getElementById('bmiResult');
             document.getElementById('bmiValue').textContent = bmiInfo.bmi;
             document.getElementById('bmiStatusText').textContent = bmiInfo.status;
-            bmiBanner.className = `mt-6 p-4 rounded-xl border transition-all ${bmiInfo.colorClass}`;
+            bmiBanner.className = `mt-6 p-5 rounded-xl border transition-all ${bmiInfo.colorClass}`;
             bmiBanner.classList.remove('hidden');
 
             // 2. Fetch Plan
@@ -431,4 +431,4 @@ html_code = """
 </html>
 """
 
-components.html(html_code, height=1200, scrolling=True)
+components.html(html_code, height=1400, scrolling=True)
