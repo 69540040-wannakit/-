@@ -3,10 +3,10 @@
 import streamlit as st
 import streamlit.components.v1 as components
 
-# 1. เพิ่มคำสั่งนี้เป็นบรรทัดแรกของ Streamlit เพื่อให้แสดงผลแบบกว้าง (Wide Layout) เต็มหน้าจอ
+# 1. ตั้งค่า Streamlit ให้เป็น Wide Layout เต็มหน้าจอ
 st.set_page_config(page_title="Health & Meal Planner", layout="wide")
 
-# วางโค้ด HTML ทั้งหมดไว้ด้านล่างนี้
+# โค้ด HTML ที่ปรับปรุงให้แสดงผลเต็มพื้นที่ (Full Width)
 html_code = """
 <!DOCTYPE html>
 <html lang="th">
@@ -18,19 +18,24 @@ html_code = """
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Kanit', sans-serif; }
+        /* ซ่อน Scrollbar ของ iframe ในบางเบราว์เซอร์ถ้าไม่จำเป็น */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f5f5f4; }
+        ::-webkit-scrollbar-thumb { background: #d6d3d1; border-radius: 4px; }
     </style>
 </head>
 <body class="bg-stone-50 text-stone-800 min-h-screen pb-12">
-    <!-- 2. เปลี่ยนจาก max-w-4xl เป็น w-full และเพิ่ม padding ด้านข้างให้เต็มหน้าจอ -->
-    <div class="w-full px-4 md:px-12 py-8">
+    <!-- ปรับคอนเทนเนอร์หลักให้เป็น w-full และลด padding ด้านข้างให้เนื้อหาขยายเต็มที่ -->
+    <div class="w-full px-2 sm:px-6 md:px-8 py-8">
+        
         <!-- Header -->
         <header class="text-center mb-8">
             <h1 class="text-3xl font-light text-stone-900 mt-2">Health & Meal Planner</h1>
             <p class="text-sm text-stone-500 mt-1">วางแผนโภชนาการและการออกกำลังกายส่วนบุคคลด้วย AI</p>
         </header>
 
-        <!-- BMI Reference Table -->
-        <div class="bg-white rounded-2xl p-5 border border-stone-200/80 shadow-sm mb-6 max-w-6xl mx-auto">
+        <!-- BMI Reference Table (นำ max-w-6xl ออก และใส่ w-full) -->
+        <div class="w-full bg-white rounded-2xl p-5 border border-stone-200/80 shadow-sm mb-6">
             <h2 class="text-sm font-medium text-stone-700 mb-3 flex items-center gap-2">
                 <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 ตารางเกณฑ์ค่า BMI อ้างอิง (ชาย & หญิง)
@@ -57,8 +62,8 @@ html_code = """
             </div>
         </div>
 
-        <!-- Form Section -->
-        <div class="bg-white rounded-2xl p-6 border border-stone-200/80 shadow-sm mb-8 max-w-6xl mx-auto">
+        <!-- Form Section (นำ max-w-6xl ออก และใส่ w-full) -->
+        <div class="w-full bg-white rounded-2xl p-6 border border-stone-200/80 shadow-sm mb-8">
             <form id="healthForm" class="space-y-4">
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                     <div>
@@ -117,8 +122,8 @@ html_code = """
             <p class="text-sm text-stone-500 mt-3">กำลังให้ AI ออกแบบแผนโภชนาการและออกกำลังกาย...</p>
         </div>
 
-        <!-- 3. ปรับให้การ์ดแสดงผลเรียงต่อกันหลายคอลัมน์เมื่อหน้าจอกว้างขึ้น -->
-        <div id="planContainer" class="grid grid-cols-1 xl:grid-cols-2 gap-6"></div>
+        <!-- ปรับให้การ์ดแสดงผลรองรับหลายคอลัมน์มากขึ้นในหน้าจอกว้าง (Full width grid) -->
+        <div id="planContainer" class="w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6"></div>
     </div>
 
     <script>
@@ -188,7 +193,7 @@ html_code = """
                 console.warn("AI API call failed or not available, generating fallback structure.", e);
             }
 
-            // Fallback generation for demo/standard loop
+            // Fallback generation
             const result = [];
             for (let i = 1; i <= days; i++) {
                 result.push({
@@ -203,42 +208,42 @@ html_code = """
                         title: goal === 'เพิ่มกล้ามเนื้อ' ? 'เวทเทรนนิ่ง เน้นกล้ามเนื้อใหญ่' : 'คาร์ดิโอ + เวทเทรนนิ่งเบาๆ',
                         detail: goal === 'เพิ่มกล้ามเนื้อ' ? 'Squat, Push-up, Lunge อย่างละ 4 เซต เซตละ 12 ครั้ง' : 'เดินเร็ว/วิ่งเหยาะๆ 30 นาที + สแควท 3 เซต'
                     }
-                }                );
+                });
             }
             return result;
         }
 
-        // Render Cards (Loop)
+        // Render Cards
         function renderPlan(planData) {
             const container = document.getElementById('planContainer');
             container.innerHTML = '';
 
             planData.forEach(item => {
                 const card = document.createElement('div');
-                card.className = 'bg-white rounded-2xl p-6 border border-stone-200/80 shadow-sm hover:shadow-md transition h-full';
+                card.className = 'bg-white rounded-2xl p-6 border border-stone-200/80 shadow-sm hover:shadow-md transition h-full flex flex-col';
                 card.innerHTML = `
                     <div class="flex items-center justify-between mb-4 pb-3 border-b border-stone-100">
                         <h3 class="font-medium text-stone-900">${item.title}</h3>
-                        <span class="text-xs bg-stone-100 text-stone-600 px-2.5 py-1 rounded-full font-medium">Day ${item.day}</span>
+                        <span class="text-xs bg-stone-100 text-stone-600 px-2.5 py-1 rounded-full font-medium whitespace-nowrap">Day ${item.day}</span>
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 h-[calc(100%-3rem)]">
+                    <div class="flex-grow space-y-4">
                         <!-- Meals -->
                         <div>
-                            <h4 class="text-xs font-semibold uppercase tracking-wider text-emerald-700 mb-3 flex items-center gap-1.5">
+                            <h4 class="text-xs font-semibold uppercase tracking-wider text-emerald-700 mb-2 flex items-center gap-1.5">
                                 🍳 ตารางอาหาร
                             </h4>
                             <ul class="space-y-2 text-sm text-stone-600">
                                 <li class="bg-stone-50 p-2.5 rounded-xl"><strong class="text-stone-800">มื้อเช้า:</strong> ${item.meals.breakfast}</li>
-                                <li class="bg-stone-50 p-2.5 rounded-xl"><strong class="text-stone-800">มื้อกลางวัน:</strong> ${item.meals.lunch}</li>
+                                <li class="bg-stone-50 p-2.5 rounded-xl"><strong class="text-stone-800">กลางวัน:</strong> ${item.meals.lunch}</li>
                                 <li class="bg-stone-50 p-2.5 rounded-xl"><strong class="text-stone-800">มื้อเย็น:</strong> ${item.meals.dinner}</li>
                             </ul>
                         </div>
                         <!-- Workout -->
                         <div>
-                            <h4 class="text-xs font-semibold uppercase tracking-wider text-stone-700 mb-3 flex items-center gap-1.5">
+                            <h4 class="text-xs font-semibold uppercase tracking-wider text-stone-700 mb-2 flex items-center gap-1.5">
                                 🏃‍♂️ การออกกำลังกาย
                             </h4>
-                            <div class="bg-stone-50 p-3.5 rounded-xl text-sm h-[calc(100%-2rem)] flex flex-col justify-center">
+                            <div class="bg-stone-50 p-3.5 rounded-xl text-sm h-full">
                                 <strong class="text-stone-800 block mb-1">${item.workout.title}</strong>
                                 <p class="text-stone-600 text-xs leading-relaxed">${item.workout.detail}</p>
                             </div>
@@ -282,5 +287,7 @@ html_code = """
 </html>
 """
 
-# คำสั่งแสดงผล HTML (ปรับความสูงเผื่อไว้สำหรับกรณีข้อมูลเยอะ)
+# คำสั่งแสดงผล HTML
+# ถ้าเนื้อหาใน HTML ทะลุความสูงที่ตั้งไว้ มันจะเลื่อนลงไปได้ด้วย scrolling=True
+# แต่เพื่อให้กินพื้นที่ได้กว้างที่สุดในเฟรมเวิร์คของ Streamlit จึงใช้ use_column_width หรือปล่อยให้ขยายตาม Layout wide
 components.html(html_code, height=1200, scrolling=True)
