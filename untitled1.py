@@ -89,7 +89,7 @@ html_code = """
                     </select>
                 </div>
 
-                <!-- Dietary Preferences (ที่เพิ่มเข้ามาใหม่) -->
+                <!-- Dietary Preferences -->
                 <div>
                     <label class="block text-xs font-medium text-stone-600 mb-2">ข้อจำกัดด้านอาหาร / รูปแบบการทาน (Dietary Preferences)</label>
                     <div class="flex flex-wrap gap-2">
@@ -197,10 +197,11 @@ html_code = """
             return { bmi, status, colorClass };
         }
 
-        // Mock/Fetch AI API Response (ส่งตัวแปร dietaryText เพิ่มเข้าไป)
+        // Mock/Fetch AI API Response 
         async function fetchPlanFromAI(gender, weight, height, goal, days, bmi, status, dietaryText) {
+            // เพิ่มคำสั่งกำชับ AI ว่าถ้าเป็นมังสวิรัติ ห้ามมีเนื้อสัตว์
             const prompt = `ผู้ใช้เพศ: ${gender === 'male' ? 'ชาย' : 'หญิง'}, น้ำหนัก: ${weight} kg, ส่วนสูง: ${height} cm, ค่า BMI: ${bmi} (${status}), เป้าหมาย: ${goal}
-${dietaryText}
+${dietaryText} (สำคัญมาก: หากมีข้อจำกัดด้านอาหาร เช่น มังสวิรัติ ต้องจัดเมนูให้ถูกต้อง ห้ามมีเนื้อสัตว์เด็ดขาด ใช้โปรตีนจากพืช เต้าหู้ เห็ด หรือเทมเป้แทน)
 กรุณาสร้างแผนโภชนาการและการออกกำลังกายแบบรายวัน จำนวนทั้งหมด ${days} วัน
 
 ตอบกลับเป็น JSON รูปแบบนี้เท่านั้น (ห้ามใส่ markdown หรือโค้ดบล็อก):
@@ -232,14 +233,32 @@ ${dietaryText}
 
             // Fallback generation for demo/standard loop
             const result = [];
+            
+            // เช็คว่าเป็นมังสวิรัติหรือไม่จาก dietaryText
+            const isVeg = dietaryText.includes("มังสวิรัติ");
+
             for (let i = 1; i <= days; i++) {
+                
+                let breakfastMenu, lunchMenu, dinnerMenu;
+
+                // กำหนดเมนูตามเป้าหมายและรูปแบบการกิน (แยกกรณีมังสวิรัติ)
+                if (isVeg) {
+                    breakfastMenu = goal === 'เพิ่มกล้ามเนื้อ' ? 'เต้าหู้ผัดเห็ดหอม + ขนมปังโฮลวีต 2 แผ่น + นมถั่วเหลือง' : 'ข้าวโอ๊ตต้มธัญพืช + กาแฟดำไม่ใส่น้ำตาล';
+                    lunchMenu = goal === 'เพิ่มกล้ามเนื้อ' ? 'ข้าวกล้อง + เทมเป้ย่าง 200g + ผักต้ม' : 'เกาเหลาเต้าหู้เห็ดรวม + ข้าวกล้องครึ่งทัพพี';
+                    dinnerMenu = goal === 'เพิ่มกล้ามเนื้อ' ? 'สลัดถั่วลูกไก่และคินัว + มันหวาน' : 'สลัดผักรวมเต้าหู้ย่าง (น้ำสลัดใส)';
+                } else {
+                    breakfastMenu = goal === 'เพิ่มกล้ามเนื้อ' ? 'ไข่ต้ม 3 ฟอง + ขนมปังโฮลวีต 2 แผ่น + นมสด' : 'อกไก่ต้ม + กาแฟดำไม่ใส่น้ำตาล';
+                    lunchMenu = goal === 'เพิ่มกล้ามเนื้อ' ? 'ข้าวกล้อง + อกไก่ย่าง 200g + ผักต้ม' : 'เกาเหลาอกไก่พิเศษผัก + ข้าวกล้องครึ่งทัพพี';
+                    dinnerMenu = goal === 'เพิ่มกล้ามเนื้อ' ? 'สเต๊กปลาแซลมอน + มันหวาน + สลัดผัก' : 'สลัดอกไก่ + ไข่ต้ม 1 ฟอง (น้ำสลัดใส)';
+                }
+
                 result.push({
                     day: i,
                     title: `วันที่ ${i}: แผนสุขภาพสร้างสมดุล`,
                     meals: {
-                        breakfast: goal === 'เพิ่มกล้ามเนื้อ' ? 'ไข่ต้ม 3 ฟอง + ขนมปังโฮลวีต 2 แผ่น + นมสด' : 'อกไก่ต้ม + กาแฟดำไม่ใส่น้ำตาล',
-                        lunch: goal === 'เพิ่มกล้ามเนื้อ' ? 'ข้าวกล้อง + อกไก่ย่าง 200g + ผักต้ม' : 'เกาเหลาอกไก่พิเศษผัก + ข้าวกล้องครึ่งทัพพี',
-                        dinner: goal === 'เพิ่มกล้ามเนื้อ' ? 'สเต๊กปลาแซลมอน + มันหวาน + สลัดผัก' : 'สลัดอกไก่ + ไข่ต้ม 1 ฟอง (น้ำสลัดใส)'
+                        breakfast: breakfastMenu,
+                        lunch: lunchMenu,
+                        dinner: dinnerMenu
                     },
                     workout: {
                         title: goal === 'เพิ่มกล้ามเนื้อ' ? 'เวทเทรนนิ่ง เน้นกล้ามเนื้อใหญ่' : 'คาร์ดิโอ + เวทเทรนนิ่งเบาๆ',
