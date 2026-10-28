@@ -58,13 +58,17 @@ html_code = """
         <!-- Form Section -->
         <div class="bg-white rounded-2xl p-6 border border-stone-200/80 shadow-sm mb-8 max-w-6xl mx-auto">
             <form id="healthForm" class="space-y-5">
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
                     <div>
                         <label class="block text-xs font-medium text-stone-600 mb-1">เพศ</label>
                         <select id="gender" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition">
                             <option value="male">ชาย</option>
                             <option value="female">หญิง</option>
                         </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium text-stone-600 mb-1">อายุ (ปี)</label>
+                        <input type="number" id="age" placeholder="เช่น 25" required min="1" max="120" class="w-full bg-stone-50 border border-stone-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition">
                     </div>
                     <div>
                         <label class="block text-xs font-medium text-stone-600 mb-1">น้ำหนัก (กิโลกรัม)</label>
@@ -186,13 +190,14 @@ html_code = """
         }
 
         // Mock/Fetch AI API Response 
-        async function fetchPlanFromAI(gender, weight, height, goal, days, bmi, status, dietaryText) {
+        async function fetchPlanFromAI(age, gender, weight, height, goal, days, bmi, status, dietaryText) {
             
             // 1. Prompt สำหรับการเรียก AI จริง (ครอบคลุมความหลากหลายและข้อจำกัดทั้งหมด)
-            const prompt = `ผู้ใช้เพศ: ${gender === 'male' ? 'ชาย' : 'หญิง'}, น้ำหนัก: ${weight} kg, ส่วนสูง: ${height} cm, ค่า BMI: ${bmi} (${status}), เป้าหมาย: ${goal}
+            const prompt = `ผู้ใช้อายุ: ${age} ปี, เพศ: ${gender === 'male' ? 'ชาย' : 'หญิง'}, น้ำหนัก: ${weight} kg, ส่วนสูง: ${height} cm, ค่า BMI: ${bmi} (${status}), เป้าหมาย: ${goal}
 ข้อจำกัดด้านอาหาร: ${dietaryText} 
 
 คำสั่งสำคัญ: 
+- จัดเมนูและรูปแบบการออกกำลังกายให้เหมาะสมกับช่วงอายุของผู้ใช้งาน
 - จัดเมนูให้ถูกต้องตามข้อจำกัดอย่างเคร่งครัด (เช่น มังสวิรัติห้ามมีเนื้อสัตว์/น้ำปลา, คีโตห้ามมีข้าว/น้ำตาล/แป้ง, แพ้ถั่วห้ามมีถั่วทุกชนิด, ไม่ทานอาหารทะเลห้ามมีกุ้งหอยปูปลาน้ำปลา)
 - **ต้องมีความหลากหลายของเมนูอาหาร** เมนูในแต่ละวันห้ามซ้ำซากจำเจ สลับสับเปลี่ยนประเภทวัตถุดิบ
 - หากเป้าหมายคือ 'เพิ่มกล้ามเนื้อ' หรือ 'โปรตีนสูง' ให้เพิ่มปริมาณโปรตีนในมื้ออาหารให้ชัดเจน
@@ -218,7 +223,6 @@ html_code = """
             }
 
             // 2. ระบบ Fallback แบบใหม่: ฐานข้อมูลเมนูแบบหลากหลาย พร้อมระบบ Filter
-            
             const isVeg = dietaryText.includes("มังสวิรัติ");
             const isKeto = dietaryText.includes("คีโต") || dietaryText.includes("คาร์บต่ำ");
             const isNoSeafood = dietaryText.includes("ไม่ทานอาหารทะเล");
@@ -300,9 +304,12 @@ html_code = """
                     d += ' (เสริมโปรตีน 1 ส่วน)';
                 }
 
-                // กำหนดแผนออกกำลังกาย
+                // กำหนดแผนออกกำลังกาย (ปรับตามอายุเบื้องต้นด้วยใน Fallback)
                 let workoutTitle, workoutDetail;
-                if (goal === 'ลดน้ำหนัก') {
+                if (age > 60) {
+                    workoutTitle = 'ออกกำลังกายแบบเบา (Low Impact)';
+                    workoutDetail = 'เดินแกว่งแขน 30 นาที หรือ โยคะยืดเหยียดเบาๆ ป้องกันข้อต่อบาดเจ็บ';
+                } else if (goal === 'ลดน้ำหนัก') {
                     workoutTitle = 'คาร์ดิโอเผาผลาญไขมัน';
                     workoutDetail = 'เดินเร็ว/จ็อกกิ้ง 45 นาที + ยืดเหยียดร่างกาย 10 นาที';
                 } else if (goal === 'เพิ่มกล้ามเนื้อ') {
@@ -367,6 +374,7 @@ html_code = """
             e.preventDefault();
 
             const gender = document.getElementById('gender').value;
+            const age = parseInt(document.getElementById('age').value);
             const weight = parseFloat(document.getElementById('weight').value);
             const height = parseFloat(document.getElementById('height').value);
             const goal = document.getElementById('goal').value;
@@ -388,7 +396,7 @@ html_code = """
             document.getElementById('loading').classList.remove('hidden');
             document.getElementById('planContainer').innerHTML = '';
 
-            const plan = await fetchPlanFromAI(gender, weight, height, goal, days, bmiInfo.bmi, bmiInfo.status, dietaryText);
+            const plan = await fetchPlanFromAI(age, gender, weight, height, goal, days, bmiInfo.bmi, bmiInfo.status, dietaryText);
 
             document.getElementById('loading').classList.add('hidden');
             renderPlan(plan);
